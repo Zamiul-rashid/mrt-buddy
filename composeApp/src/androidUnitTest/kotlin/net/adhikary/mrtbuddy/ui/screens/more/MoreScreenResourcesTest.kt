@@ -102,8 +102,17 @@ class MoreScreenResourcesTest {
             othersSectionFullBlock.split("RoundedButton(").size - 1,
             "Others section must contain exactly 2 buttons: Recharge and Station Map",
         )
+    }
 
+    @Test
+    fun testMoreScreenRechargeButtonAndDialogConfigured() {
+        val moreScreenFile = findFile("composeApp/src/commonMain/kotlin/net/adhikary/mrtbuddy/ui/screens/more/MoreScreen.kt")
+        val content = moreScreenFile.readText()
+
+        val othersIndex = content.indexOf("SectionHeader(text = stringResource(Res.string.others))")
+        val stationMapIndex = content.indexOf("text = stringResource(Res.string.stationMap)")
         val rechargeSectionBlock = content.substring(othersIndex, stationMapIndex)
+
         assertTrue(
             rechargeSectionBlock.contains("RoundedButton("),
             "Recharge button must be a RoundedButton",
