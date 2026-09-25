@@ -34,6 +34,32 @@ class MoreScreenResourcesTest {
     }
 
     @Test
+    fun testEnglishStringsXmlContainsRedirectDisclaimer() {
+        val stringsFile = findFile("composeApp/src/commonMain/composeResources/values/strings.xml")
+        val title = parseStringResource(stringsFile, "externalRedirectTitle")
+        val message = parseStringResource(stringsFile, "externalRedirectMessage")
+        val continueBtn = parseStringResource(stringsFile, "continueButton")
+        assertEquals("Leaving MRT Buddy", title)
+        assertNotNull(message)
+        assertTrue(
+            message!!.contains("third-party"),
+            "Redirect message must mention third-party",
+        )
+        assertEquals("Continue", continueBtn)
+    }
+
+    @Test
+    fun testBengaliStringsXmlContainsRedirectDisclaimer() {
+        val stringsFile = findFile("composeApp/src/commonMain/composeResources/values-bn/strings.xml")
+        val title = parseStringResource(stringsFile, "externalRedirectTitle")
+        val message = parseStringResource(stringsFile, "externalRedirectMessage")
+        val continueBtn = parseStringResource(stringsFile, "continueButton")
+        assertNotNull(title)
+        assertNotNull(message)
+        assertNotNull(continueBtn)
+    }
+
+    @Test
     fun testMoreScreenContainsRechargeButtonBeforeStationMap() {
         val moreScreenFile = findFile("composeApp/src/commonMain/kotlin/net/adhikary/mrtbuddy/ui/screens/more/MoreScreen.kt")
         val content = moreScreenFile.readText()
@@ -91,8 +117,20 @@ class MoreScreenResourcesTest {
             "Recharge button must use Res.drawable.payments",
         )
         assertTrue(
-            rechargeSectionBlock.contains("uriHandler.openUri(\"https://rapidpass.com.bd/en/login\")"),
-            "Recharge button onClick must open rapidpass login URL",
+            rechargeSectionBlock.contains("showRedirectDialog = true"),
+            "Recharge button onClick must trigger the redirect disclaimer dialog",
+        )
+        assertTrue(
+            content.contains("uriHandler.openUri(\"https://rapidpass.com.bd/en/login\")"),
+            "MoreScreen must contain rapidpass login URL in the redirect dialog",
+        )
+        assertTrue(
+            content.contains("Res.string.externalRedirectTitle"),
+            "MoreScreen must contain the external redirect disclaimer title",
+        )
+        assertTrue(
+            content.contains("Res.string.externalRedirectMessage"),
+            "MoreScreen must contain the external redirect disclaimer message",
         )
     }
 
